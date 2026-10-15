@@ -1,0 +1,6 @@
+[submodule "include/mpv"]
+	path = include/mpv
+	url = https://github.com/mpv-player/mpv
+[submodule "include/QWidget-FancyUI"]
+	path = include/QWidget-FancyUI
+	url = https://github.com/COLORREF/QWidget-FancyUI.git

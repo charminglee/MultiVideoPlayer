@@ -1,0 +1,189 @@
+{
+    "version": "2.0.0",
+    // 所有任务通过 MSYS2 的 bash 执行，并在 env 中直接注入 CLANG64 的 PATH。
+    // 注意：不能用登录 shell（-l），MSYS2 的登录脚本会把工作目录切到 home。
+    "tasks": [
+        {
+            "label": "app: Run",
+            "detail": "启动 MultiVideoPlayer 播放器",
+            "type": "shell",
+            "command": "./build/MultiVideoPlayer.exe",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "MSYSTEM": "CLANG64",
+                    "PATH": "C:\\msys64\\clang64\\bin;C:\\msys64\\usr\\bin;${env:PATH}"
+                },
+                "shell": {
+                    "executable": "C:\\msys64\\usr\\bin\\bash.exe",
+                    "args": ["-c"]
+                }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "app: Build",
+            "detail": "CMake 增量编译播放器",
+            "type": "shell",
+            "command": "cmake --build build",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "MSYSTEM": "CLANG64",
+                    "PATH": "C:\\msys64\\clang64\\bin;C:\\msys64\\usr\\bin;${env:PATH}"
+                },
+                "shell": {
+                    "executable": "C:\\msys64\\usr\\bin\\bash.exe",
+                    "args": ["-c"]
+                }
+            },
+            "problemMatcher": {
+                "owner": "app-clang",
+                "fileLocation": ["relative", "${workspaceFolder}/build"],
+                "pattern": {
+                    "regexp": "^(..[^:]*):(\\d+):(\\d+):\\s+(error|warning):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        },
+        {
+            "label": "app: Configure",
+            "detail": "CMake 首次/重新配置",
+            "type": "shell",
+            "command": "cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE='Debug'",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "MSYSTEM": "CLANG64",
+                    "PATH": "C:\\msys64\\clang64\\bin;C:\\msys64\\usr\\bin;${env:PATH}"
+                },
+                "shell": {
+                    "executable": "C:\\msys64\\usr\\bin\\bash.exe",
+                    "args": ["-c"]
+                }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "mpv: Build",
+            "detail": "增量编译（快捷键 Ctrl+Shift+B）",
+            "type": "shell",
+            "command": "meson compile -C build",
+            "options": {
+                "cwd": "${workspaceFolder}/include/mpv",
+                "env": {
+                    "MSYSTEM": "CLANG64",
+                    "PATH": "C:\\msys64\\clang64\\bin;C:\\msys64\\usr\\bin;${env:PATH}"
+                },
+                "shell": {
+                    "executable": "C:\\msys64\\usr\\bin\\bash.exe",
+                    "args": ["-c"]
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": {
+                "owner": "mpv-clang",
+                // clang 输出的源文件路径相对于 build/ 目录（如 ../video/xxx.c）
+                "fileLocation": ["relative", "${workspaceFolder}/include/mpv/build"],
+                "pattern": {
+                    "regexp": "^(..[^:]*):(\\d+):(\\d+):\\s+(error|warning):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        },
+        {
+            "label": "mpv: Run",
+            "detail": "启动编译出的 mpv.exe（PATH 已含 CLANG64 的 DLL）",
+            "type": "shell",
+            "command": "./build/mpv.exe",
+            "options": {
+                "cwd": "${workspaceFolder}/include/mpv",
+                "env": {
+                    "MSYSTEM": "CLANG64",
+                    "PATH": "C:\\msys64\\clang64\\bin;C:\\msys64\\usr\\bin;${env:PATH}"
+                },
+                "shell": {
+                    "executable": "C:\\msys64\\usr\\bin\\bash.exe",
+                    "args": ["-c"]
+                }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "mpv: Configure",
+            "detail": "首次配置构建目录 build/（已配置过则不必再跑）",
+            "type": "shell",
+            "command": "meson setup build -Dlibmpv=true -Djavascript=enabled",
+            "options": {
+                "cwd": "${workspaceFolder}/include/mpv",
+                "env": {
+                    "MSYSTEM": "CLANG64",
+                    "PATH": "C:\\msys64\\clang64\\bin;C:\\msys64\\usr\\bin;${env:PATH}"
+                },
+                "shell": {
+                    "executable": "C:\\msys64\\usr\\bin\\bash.exe",
+                    "args": ["-c"]
+                }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "mpv: Reconfigure",
+            "detail": "改了 meson 选项或依赖变化后重新配置",
+            "type": "shell",
+            "command": "meson setup build --reconfigure",
+            "options": {
+                "cwd": "${workspaceFolder}/include/mpv",
+                "env": {
+                    "MSYSTEM": "CLANG64",
+                    "PATH": "C:\\msys64\\clang64\\bin;C:\\msys64\\usr\\bin;${env:PATH}"
+                },
+                "shell": {
+                    "executable": "C:\\msys64\\usr\\bin\\bash.exe",
+                    "args": ["-c"]
+                }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "mpv: Clean Rebuild",
+            "detail": "删掉 build/ 后从零配置并编译",
+            "type": "shell",
+            "command": "rm -rf build && meson setup build -Dlibmpv=true -Djavascript=enabled && meson compile -C build",
+            "options": {
+                "cwd": "${workspaceFolder}/include/mpv",
+                "env": {
+                    "MSYSTEM": "CLANG64",
+                    "PATH": "C:\\msys64\\clang64\\bin;C:\\msys64\\usr\\bin;${env:PATH}"
+                },
+                "shell": {
+                    "executable": "C:\\msys64\\usr\\bin\\bash.exe",
+                    "args": ["-c"]
+                }
+            },
+            "problemMatcher": {
+                "owner": "mpv-clang",
+                "fileLocation": ["relative", "${workspaceFolder}/include/mpv/build"],
+                "pattern": {
+                    "regexp": "^(..[^:]*):(\\d+):(\\d+):\\s+(error|warning):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        }
+    ]
+}

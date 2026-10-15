@@ -1,0 +1,16 @@
+{
+    "version": 4,
+    "configurations": [
+        {
+            "name": "CLANG64",
+            "compilerPath": "C:/msys64/clang64/bin/cc.exe",
+            "compileCommands": "${workspaceFolder}/include/mpv/build/compile_commands.json",
+            "intelliSenseMode": "windows-clang-x64",
+            "cStandard": "c11",
+            "includePath": [
+                "${workspaceFolder}/include/mpv",
+                "${workspaceFolder}/include/mpv/build"
+            ]
+        }
+    ]
+}

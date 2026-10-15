@@ -1,0 +1,24 @@
+{
+    // CMake Tools 与 app: Configure 任务对齐：无论自动/手动 configure 都带 Debug，
+    // 避免 cache 的 CMAKE_BUILD_TYPE 变空导致 cpptools 报
+    // "build configurations do not contain the active build configuration"。
+    "cmake.generator": "Ninja",
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.configureSettings": {
+        "CMAKE_BUILD_TYPE": "Debug"
+    },
+
+    // 集成终端里加一个 CLANG64 环境的个人配置：
+    // 终端面板右上角下拉框选择 "CLANG64"，即可直接使用 meson/ninja/pacman。
+    // 不用 -l 登录 shell（会切到 home），PATH 在这里显式注入。
+    "terminal.integrated.profiles.windows": {
+        "CLANG64": {
+            "path": "C:\\msys64\\usr\\bin\\bash.exe",
+            "env": {
+                "MSYSTEM": "CLANG64",
+                "PATH": "C:\\msys64\\clang64\\bin;C:\\msys64\\usr\\bin;${env:PATH}"
+            },
+            "icon": "terminal-bash"
+        }
+    }
+}
